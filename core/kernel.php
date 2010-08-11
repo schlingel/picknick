@@ -263,6 +263,11 @@ class Kernel implements IKernel {
     public function  GetDataAccessor() { return $this->DataAccessor; }
 
     /**
+     * Gets the title of the current page.
+     */
+    public function GetTitle() { return $this->CurrentPage->GetTitle(); }
+
+    /**
      * Parses the ../etc/logger directory and tries to create objects from the
      * file names. The pattern is FILE_NAME.php and creates a call like this:
      * bla = new FILE_NAME(); and adds this objects to the logger module.
@@ -364,7 +369,7 @@ class Kernel implements IKernel {
     private function GetPage($location) {
         $page = null;
         $className = $this->GetClassNameFrom($location);
-        $code = "\$page = new {$className}();";
+        $code = "\$page = new {$className}(\$this);";
         
         eval($code);
         return $page;
