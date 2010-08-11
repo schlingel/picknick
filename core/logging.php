@@ -11,8 +11,6 @@ interface ILoggingObserver {
 
     public function Write($errorLevel, $message);
 
-    public function Write($message);
-
     public function Close();
 }
 

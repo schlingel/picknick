@@ -1,5 +1,5 @@
 <?php
-class WrongTypeException implements Exception { }
+class WrongTypeException extends Exception { }
 
-class FileNotFoundException implements Exception { }
+class FileNotFoundException extends Exception { }
 ?>

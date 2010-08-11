@@ -11,7 +11,7 @@ class PostProvider implements IDataProvider {
         $this->Data = $_GET;
     }
 
-    public function  GetData() {
+    public function GetData() {
         return $this->Data;
     }
 
