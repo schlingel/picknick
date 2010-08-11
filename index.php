@@ -10,11 +10,11 @@ $kernel = new Kernel();
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title></title>
+        <title<?php echo $kernel->GetTitle(); ?>></title>
     </head>
     <body>
         <?php
-        // put your code here
+            $kernel->ShowPage();
         ?>
     </body>
 </html>

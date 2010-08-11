@@ -9,22 +9,21 @@ abstract class Page {
      * @var IKernel 
      */
     protected $Host;
-
-    /**
-     * The name of this page.
-     * @var string
-     */
-    protected $Name;
-
-    public function __construct($host, $name) {
+    
+    public function __construct($host) {
         $this->Host = $host;
-        $this->Name = $name;
     }
 
     /**
      * Gets an associative array of values in the value dispatcher objects.
      */
     public abstract function Initialize();
+
+    /**
+     * Returns the title of the page. This title is entered in the title tags
+     * in the header of the html file.
+     */
+    public abstract function GetTitle();
 
     /**
      * Writes the error with the given message to all logger objects.
