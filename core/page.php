@@ -24,7 +24,7 @@ abstract class Page {
     /**
      * Gets an associative array of values in the value dispatcher objects.
      */
-    public function Initialize($variables);
+    public abstract function Initialize();
 
     /**
      * Writes the error with the given message to all logger objects.

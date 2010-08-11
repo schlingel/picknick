@@ -206,6 +206,11 @@ interface IKernel {
      * Checks if the given location does exist.
      */
     public function IsLinkValid($location);
+
+    /**
+     * Shows the selected page.
+     */
+    public function ShowPage();
 }
 
 /**
@@ -216,6 +221,8 @@ class Kernel implements IKernel {
     protected $Logger;
 
     protected $DataAccessor;
+
+    protected $CurrentPage;
 
     public function  __construct() {
         $this->Logger = new LoggingPublisher();
@@ -233,7 +240,27 @@ class Kernel implements IKernel {
         $this->GetDataSinkFromEtc();
 
         $this->DataAccessor->Initialize();
+
+        $this->CurrentPage = $this->GetPage($this->GetLocationLink());
+        $this->CurrentPage->Initialize();
     }
+
+    /**
+     * Returns the given location link from the data providers. If it isn't set
+     * 'Standard' is returned.
+     */
+    private function GetLocationLink() {
+        $name = $this->DataAccessor->GetValue('location');
+        if($name === null)
+            return 'Standard';
+
+        return $name;
+    }
+
+    /**
+     * Gets the data accessor reference.
+     */
+    public function  GetDataAccessor() { return $this->DataAccessor; }
 
     /**
      * Parses the ../etc/logger directory and tries to create objects from the
@@ -241,7 +268,7 @@ class Kernel implements IKernel {
      * bla = new FILE_NAME(); and adds this objects to the logger module.
      */
     private function GetLoggerFromEtc() {
-        $path = dirname(__FILE__) . '../etc/logger';
+        $path = dirname(__FILE__) . '/../etc/logger';
         $filenames = $this->GetFileNamesFrom($path);
         $logger = $this->Logger;
 
@@ -256,7 +283,7 @@ class Kernel implements IKernel {
      * data provider to the kernel.
      */
     private function GetDataProviderFromEtc() {
-        $path = dirname(__FILE__) . '../etc/data.provider';
+        $path = dirname(__FILE__) . '/../etc/data.provider';
         $filenames = $this->GetFileNamesFrom($path);
 
         $accessor = $this->DataAccessor;
@@ -268,7 +295,7 @@ class Kernel implements IKernel {
     }
 
     private function GetDataSinkFromEtc() {
-        $path = dirname(__FILE__) . '../etc/data.sink';
+        $path = dirname(__FILE__) . '/../etc/data.sink';
         $filenames = $this->GetFileNamesFrom($path);
         $accessor = $this->DataAccessor;
 
@@ -287,11 +314,14 @@ class Kernel implements IKernel {
     private function GetFileNamesFrom($path) {
         $array = array();
         $counter = 0;
-        $dir = new DirectoryIterator(dirname(__FILE__));
+        $dir = new DirectoryIterator($path);
         
         foreach ($dir as $fileinfo) {
             $name = $fileinfo->getFilename();
             
+            if($name == '.' || $name == '..')
+                continue;
+
             if($this->IsPHP($name)) {
                 $array[$counter] = $name;
                 $counter++;
@@ -320,7 +350,39 @@ class Kernel implements IKernel {
      * allways a path, wether the file exists or not.
      */
     public function GetPathOfLink($location) {
-        return dirname(__FILE__) . "../page/{$location}.php";
+        return dirname(__FILE__) . "/../page/{$location}.php";
+    }
+
+    public function  ShowPage() { $this->CurrentPage->ShowBody(); }
+
+
+    /**
+     * Generates code for invoking the given page object and creates it.
+     * @param string $location
+     * @return Page
+     */
+    private function GetPage($location) {
+        $page = null;
+        $className = $this->GetClassNameFrom($location);
+        $code = "\$page = new {$className}();";
+        
+        eval($code);
+        return $page;
+    }
+
+    /**
+     * Splits the given location string and build the object name.
+     */
+    private function GetClassNameFrom($location) {
+        $pieces = explode("/", $location);
+        $val = '';
+
+        foreach($pieces as $piece) {
+            $piece = ucfirst($piece);
+            $val = "{$val}{$piece}";
+        }
+
+        return $val;
     }
 
     /**

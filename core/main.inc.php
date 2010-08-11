@@ -16,11 +16,14 @@ function include_dir($dirpath) {
     $dir = new DirectoryIterator($dirpath);
 
     foreach($dir as $fileinfo) {
-        require_once $fileinfo->getPath();
+        $fileName = $fileinfo->getFilename();
+
+        if($fileName == '.' || $fileName == '..')
+            continue;
+
+        require_once "{$fileinfo->getRealPath()}";
     }
 }
-
-
 
 require_once dirname(__FILE__) . '/exceptions.php';
 require_once dirname(__FILE__) . '/logging.php';
