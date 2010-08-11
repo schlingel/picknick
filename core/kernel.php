@@ -33,14 +33,52 @@ interface IDataProvider {
  * begins with "tmp."
  */
 interface IDataSink {
-    
+    /**
+     * Returns the name of the sink object.
+     */
+    public function GetName();
+
+    /**
+     * Checks if the given name matches the condition to remove the name value
+     * pair from the data providers.
+     */
+    public function IsTemporary($name);
 }
 
 class DataAccessor {
     protected $DataProviders;
 
+    protected $DataSinks;
+
+    protected $TemporaryData;
+
     public function __construct() {
         $this->DataProviders = array();
+        $this->DataProviders = array();
+        $this->TemporaryData = array();
+    }
+
+    /*
+     * Checks for every value in every data provider if there is any data sink
+     * which condition fires on the given value.
+     */
+    public function Initialize() {
+        foreach($this->DataProviders as $dataProvider) {
+            $data = $dataProvider->GetData();
+
+            foreach($data as $key => $value) {
+                foreach($this->DataSinks as $dataSink) {
+                    $data = $dataProvider->GetData();
+
+                    if($dataSink->IsTemporary($key)) {
+                        if(isset($this->TemporaryData[$dataSink->GetName()]))
+                            $this->TemporaryData[$dataSink->GetName()][$key] = $value;
+                        else
+                            $this->TemporaryData[$dataSink->GetName()] = array($key => $name);
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -63,6 +101,27 @@ class DataAccessor {
 
         if($index)
             unset($this->DataProviders[$index]);
+    }
+
+    /*
+     * Adds a data sink to the data sink list.
+     */
+    public function AddDataSink($dataSink) {
+        if(!($dataSink instanceof IDataSink))
+            throw new WrongTypeException ("The given data sink object is not a IDataSink object!");
+
+        $this->DataSinks[count($this->DataSinks)] = $dataSink;
+    }
+
+    /**
+     * Removes the given data sink from the data sink list.
+     * @param <type> $dataSink 
+     */
+    public function RemoveDataSink($dataSink) {
+        $index = array_search($dataSink);
+
+        if($index)
+            unset($this->DataSinks[$index]);
     }
 
     /**
@@ -150,7 +209,7 @@ class Kernel implements IKernel {
     public function  __construct() {
         $this->Logger = new LoggingPublisher();
         $this->DataAccessor = new DataAccessor();
-        
+
         $this->Initialize();
     }
 
@@ -160,6 +219,9 @@ class Kernel implements IKernel {
     private function Initialize() {
         $this->GetLoggerFromEtc();
         $this->GetDataProviderFromEtc();
+        $this->GetDataSinkFromEtc();
+
+        $this->DataAccessor->Initialize();
     }
 
     /**
@@ -190,9 +252,18 @@ class Kernel implements IKernel {
 
         foreach($filenames as $filename) {
             $pureName = substr($filename, 0, strlen($filename) - 4);
-            $accessor->AddDataProvider($dataProvider);
-
             eval("\$accessor->AddDataProvider(new {$pureName}());");
+        }
+    }
+
+    private function GetDataSinkFromEtc() {
+        $path = dirname(__FILE__) . '../etc/data.sink';
+        $filenames = $this->GetFileNamesFrom($path);
+        $accessor = $this->DataAccessor;
+
+        foreach($filenames as $filename) {
+            $pureName = substr($filename, 0, strlen($filename) - 4);
+            eval("\$accessor->AddDataSink(new {$pureName}());");
         }
     }
 
