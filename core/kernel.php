@@ -45,6 +45,17 @@ interface IDataSink {
     public function IsTemporary($name);
 }
 
+/**
+ * Handles the access to the data arround the HTTP-session. This object
+ * contains a list of data providers of storing data for the whole session, so
+ * that data doesn't get lost after clicking a link or posting something via
+ * a form and a list of data sinks. Data sinks take care about filtering
+ * data out of the data providers.
+ * Through data sinks it is possible to remove POST data from the session
+ * immanent data storing. (E.g. it isn't necessary to store the login form
+ * data for the whole session.) But via the data sinks the data keeps after the
+ * click temporarly available.
+ */
 class DataAccessor {
     protected $DataProviders;
 
