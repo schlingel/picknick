@@ -10,7 +10,7 @@ $kernel = new Kernel();
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title<?php echo $kernel->GetTitle(); ?>></title>
+        <title><?php echo $kernel->GetTitle(); ?></title>
     </head>
     <body>
         <?php

@@ -179,6 +179,13 @@ class DataAccessor {
 
         return $array;
     }
+
+    /**
+     * Returns the temporary data.
+     */
+    public function GetTmpData() {
+        return $this->TemporaryData;
+    }
 }
 
 /**
@@ -354,11 +361,9 @@ class Kernel implements IKernel {
      * Generates the possible path to the given location. This method returns
      * allways a path, wether the file exists or not.
      */
-    public function GetPathOfLink($location) {
-        return dirname(__FILE__) . "/../page/{$location}.php";
-    }
+    public function GetPathOfLink($location) { return dirname(__FILE__) . "/../page/{$location}.php"; }
 
-    public function  ShowPage() { $this->CurrentPage->ShowBody(); }
+    public function ShowPage() { $this->CurrentPage->ShowBody(); }
 
 
     /**
@@ -379,6 +384,9 @@ class Kernel implements IKernel {
      * Splits the given location string and build the object name.
      */
     private function GetClassNameFrom($location) {
+        if(!$this->IsLinkValid($location))
+                return 'InvalidLocation';
+
         $pieces = explode("/", $location);
         $val = '';
 

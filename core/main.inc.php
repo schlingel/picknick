@@ -21,7 +21,12 @@ function include_dir($dirpath) {
         if($fileName == '.' || $fileName == '..')
             continue;
 
-        require_once "{$fileinfo->getRealPath()}";
+        if(is_dir($fileinfo->getRealPath())) {
+            include_dir ($fileinfo->getRealPath());
+        }
+        else {
+            require_once "{$fileinfo->getRealPath()}";
+        }
     }
 }
 

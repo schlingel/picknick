@@ -40,7 +40,7 @@ abstract class Page {
     public abstract function ShowBody();
 
     protected function GetTemplate($name) {
-        $path = "/../templates/{$name}.php";
+        $path = dirname(__FILE__) . "/../templates/{$name}.php";
 
         if(!file_exists($path))
             throw new FileNotFoundException("Couldn't include template for {$name} file {$path} does not exist!");
@@ -51,8 +51,8 @@ abstract class Page {
     /**
      * Uses Getlink and writes the given anchor the html file.
      */
-    protected function WriteLink($location, $name='', $alt='', $kernel='/../index.php') {
-        echo $this->GetLink($location, $name, $alt, $kernel);
+    protected function WriteLink($location, $name='', $alt='', $extraParams=null, $kernel='/../index.php') {
+        echo $this->GetLink($location, $name, $alt, $extraParams, $kernel);
     }
 
     /**
@@ -63,12 +63,12 @@ abstract class Page {
     // in the subdirectory admin with the name panel the addressing location
     // would be: 'admin/panel'
     // The resulting link would be "SERVER_PATH"/index.php?REGISTERED_VARS&location=admin/panel
-    protected function GetLink($location, $name='', $alt='', $kernel='/../index.php') {
+    protected function GetLink($location, $name='', $alt='', $extraParams=null, $kernel='/../index.php') {
         if(!$this->Host->IsLinkValid($location))
             throw new FileNotFoundException("The given link {$location} does not point to a file in the page directory!");
         
         $name = ($name === '') ? $location : $name;
-        $href = $this->GetHrefFor($location, $kernel);
+        $href = $this->GetHrefFor($location, $kernel, $extraParams);
 
         return "<a href=\"{$href}\" alt=\"{$alt}\">{$name}</a>";
     }
@@ -79,8 +79,8 @@ abstract class Page {
      * @param string the kernel to which this link leads.
      * @return string
      */
-    private function GetHrefFor($location, $kernel) {
-        $params = $this->GetHttpParams();
+    private function GetHrefFor($location, $kernel, $extraParams=null) {
+        $params = $this->GetHttpParams($extraParams);
         $params = ($params === '') ? "?location={$location}" : "{$params}&location={$location}";
         $path = dirname(__FILE__) . "{$kernel}{$params}";
         
@@ -91,9 +91,12 @@ abstract class Page {
      * Generates a string which is properly formatted for the HTTP-URL with the
      * name value pairs taken from the data accessor of the kernel.
      */
-    private function GetHttpParams() {
+    private function GetHttpParams($extraParams = null) {
         $providers = $this->Host->GetDataAccessor();
         $array = $providers->GetAssocArray();
+        if($extraParams != null)
+            $array = array_merge($array, $extraParams);
+        
         $params = '';
 
         foreach($array as $key => $value) {
@@ -105,6 +108,8 @@ abstract class Page {
 
         return $params;
     }
+
+    public function GetDataStore() { return $this->Host->GetDataAccessor()->GetAssocArray(); }
 }
 
 ?>
