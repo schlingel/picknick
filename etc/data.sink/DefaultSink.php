@@ -29,7 +29,7 @@ class DefaultSink implements IDataSink {
         }
 
         if($this->BeginsWith($name, 'tmp.') || (strcmp($name, 'location') == 0)) {
-            $this->Lastname = 'tmp';
+            $this->LastName = 'tmp';
             return true;
         }
 
