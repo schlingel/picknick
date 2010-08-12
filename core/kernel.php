@@ -57,15 +57,32 @@ interface IDataSink {
  * click temporarly available.
  */
 class DataAccessor {
+    /**
+     * Contains the list of the data providers.
+     * var array(IDataProvider)
+     */
     protected $DataProviders;
 
+    /**
+     * Contains the list of the data sinks.
+     * VAR array(IDataSink)
+     */
     protected $DataSinks;
 
+    /*
+     * Stores the data which gets lost the next time the user sends a POST or
+     * GET request.
+     */
     protected $TemporaryData;
+
+    /**
+     * Stores the data which is consistent for the whole session.
+     */
+    protected $StoredData;
 
     public function __construct() {
         $this->DataProviders = array();
-        $this->DataProviders = array();
+        $this->DataSinks = array();
         $this->TemporaryData = array();
     }
 
@@ -74,19 +91,21 @@ class DataAccessor {
      * which condition fires on the given value.
      */
     public function Initialize() {
+        $this->StoredData = array();
+        $this->TemporaryData = array();
+
         foreach($this->DataProviders as $dataProvider) {
             $data = $dataProvider->GetData();
+            $this->StoredData = array_merge($this->StoredData, $data);
+        }
 
-            foreach($data as $key => $value) {
-                foreach($this->DataSinks as $dataSink) {
-                    $data = $dataProvider->GetData();
+        foreach($this->StoredData as $key => $value) {
+            foreach($this->DataSinks as $dataSink) {
+                if($dataSink->IsTemporary($key)) {
+                    $category = $dataSink->GetName();
 
-                    if($dataSink->IsTemporary($key)) {
-                        if(isset($this->TemporaryData[$dataSink->GetName()]))
-                            $this->TemporaryData[$dataSink->GetName()][$key] = $value;
-                        else
-                            $this->TemporaryData[$dataSink->GetName()] = array($key => $name);
-                    }
+                    $this->TemporaryData[$category] = array($key => $value);
+                    $this->UnsetValue($key);
                 }
             }
         }
@@ -143,49 +162,26 @@ class DataAccessor {
      * @param string $name
      * @return mixed
      */
-    public function GetValue($name) {
-        foreach($this->DataProviders as $provider) {
-            $assoc_array = $provider->GetData();
+    public function GetValue($name) { return $this->StoredData[$name]; }
 
-            if(isset($assoc_array[$name]))
-                return $assoc_array[$name];
-        }
-
-        return null;
-    }
+    public function GetTmpValue($category, $name) { return $this->TemporaryData[$category][$name]; }
 
     /**
      * Unsets the value with the given name in every data provider.
      */
-    public function UnsetValue($name) {
-        foreach($this->DataProviders as $provider) {
-            $provider->UnsetValue($name);
-        }
-    }
+    public function UnsetValue($name) { unset($this->StoredData[$name]); }
 
     /**
      * Generates one assoc array out of all data provider datasets.
      *
      * return array(mixed)
      */
-    public function GetAssocArray() {
-        $array = array();
-
-        foreach($this->DataProviders as $provider) {
-            foreach($provider->GetData() as $key => $value) {
-                $array[$key] = $value;
-            }
-        }
-
-        return $array;
-    }
+    public function GetAssocArray() { return $this->StoredData; }
 
     /**
      * Returns the temporary data.
      */
-    public function GetTmpData() {
-        return $this->TemporaryData;
-    }
+    public function GetTmpData() { return $this->TemporaryData; }
 }
 
 /**
@@ -207,7 +203,7 @@ interface IKernel {
     /**
      * Creates a path to the given location
      */
-    public function GetPathOfLink($location);
+    public function GetPathOfLocation($location);
 
     /**
      * Checks if the given location does exist.
@@ -257,7 +253,8 @@ class Kernel implements IKernel {
      * 'Standard' is returned.
      */
     private function GetLocationLink() {
-        $name = $this->DataAccessor->GetValue('location');
+        $name = $this->DataAccessor->GetTmpValue('tmp', 'location');
+
         if($name === null)
             return 'Standard';
 
@@ -352,19 +349,16 @@ class Kernel implements IKernel {
         return ($end === '.php');
     }
 
+    public function GetPathOfLocation($location) {
+        return dirname(__FILE__) . "/../page/{$location}.php";
+    }
+    
     public function IsLinkValid($location) {
-        $path = $this->GetPathOfLink($location);
+        $path = $this->GetPathOfLocation($location);
         return file_exists($path);
     }
 
-    /**
-     * Generates the possible path to the given location. This method returns
-     * allways a path, wether the file exists or not.
-     */
-    public function GetPathOfLink($location) { return dirname(__FILE__) . "/../page/{$location}.php"; }
-
     public function ShowPage() { $this->CurrentPage->ShowBody(); }
-
 
     /**
      * Generates code for invoking the given page object and creates it.
@@ -375,7 +369,7 @@ class Kernel implements IKernel {
         $page = null;
         $className = $this->GetClassNameFrom($location);
         $code = "\$page = new {$className}(\$this);";
-        
+
         eval($code);
         return $page;
     }
@@ -384,6 +378,7 @@ class Kernel implements IKernel {
      * Splits the given location string and build the object name.
      */
     private function GetClassNameFrom($location) {
+
         if(!$this->IsLinkValid($location))
                 return 'InvalidLocation';
 

@@ -51,7 +51,7 @@ abstract class Page {
     /**
      * Uses Getlink and writes the given anchor the html file.
      */
-    protected function WriteLink($location, $name='', $alt='', $extraParams=null, $kernel='/../index.php') {
+    protected function WriteLink($location, $name='', $alt='', $extraParams=null, $kernel='index.php') {
         echo $this->GetLink($location, $name, $alt, $extraParams, $kernel);
     }
 
@@ -63,7 +63,7 @@ abstract class Page {
     // in the subdirectory admin with the name panel the addressing location
     // would be: 'admin/panel'
     // The resulting link would be "SERVER_PATH"/index.php?REGISTERED_VARS&location=admin/panel
-    protected function GetLink($location, $name='', $alt='', $extraParams=null, $kernel='/../index.php') {
+    protected function GetLink($location, $name='', $alt='', $extraParams=null, $kernel='index.php') {
         if(!$this->Host->IsLinkValid($location))
             throw new FileNotFoundException("The given link {$location} does not point to a file in the page directory!");
         
@@ -82,8 +82,8 @@ abstract class Page {
     private function GetHrefFor($location, $kernel, $extraParams=null) {
         $params = $this->GetHttpParams($extraParams);
         $params = ($params === '') ? "?location={$location}" : "{$params}&location={$location}";
-        $path = dirname(__FILE__) . "{$kernel}{$params}";
-        
+        $path = __URL__ . "{$kernel}{$params}";
+
         return $path;
     }
 
@@ -110,6 +110,8 @@ abstract class Page {
     }
 
     public function GetDataStore() { return $this->Host->GetDataAccessor()->GetAssocArray(); }
+
+    public function GetTmpData() { return $this->Host->GetDataAccessor()->GetTmpData(); }
 }
 
 ?>

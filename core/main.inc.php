@@ -18,7 +18,7 @@ function include_dir($dirpath) {
     foreach($dir as $fileinfo) {
         $fileName = $fileinfo->getFilename();
 
-        if($fileName == '.' || $fileName == '..')
+        if($fileName == '.' || $fileName == '..' || !IsPHP($fileName))
             continue;
 
         if(is_dir($fileinfo->getRealPath())) {
@@ -29,6 +29,44 @@ function include_dir($dirpath) {
         }
     }
 }
+
+/**
+ * Checks if the given file is a php file.
+ */
+function IsPHP($file) {
+    if(strlen($file) <= 4)
+        return false;
+
+    $substring = substr($file, strlen($file) - 4);
+    return ($substring === '.php');
+}
+
+/*
+ * CONFIGURE!!!
+ *
+ * This is the only bit of configuration which must be done. Just enter the
+ * directory hierachy.
+ *
+ * For example. If the project lies direct in the root directory of the web
+ * server __PROJECT__ must be empty:
+ *  define('__PROJECT__', '');
+ *
+ * If there are the directory hierachy:
+ * project
+ *   |
+ *   +-page
+ *      |
+ *      +-system
+ *
+ * then it is:
+ * server __PROJECT__ must be empty:
+ *  define('__PROJECT__', 'project/page/system/');
+ * 
+ * The last slash is needed in a directory hierachy!
+ */
+define('__PROJECT__', 'Picknick/');
+
+define('__URL__', "http://{$_SERVER['SERVER_NAME']}/" . __PROJECT__);
 
 require_once dirname(__FILE__) . '/exceptions.php';
 require_once dirname(__FILE__) . '/logging.php';

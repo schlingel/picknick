@@ -7,7 +7,7 @@ class Standard extends Page {
     public function GetTitle() { return "Default Page"; }
 
     public function ShowBody() {
-        echo "HALLO WELT ;-)";
+        $this->GetTemplate('navigation/links');
         $this->GetTemplate('Standard');
     }
 

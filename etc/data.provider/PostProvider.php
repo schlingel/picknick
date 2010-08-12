@@ -16,7 +16,7 @@ class PostProvider implements IDataProvider {
     }
 
     public function UnsetValue($name) {
-        $index = array_search($name);
+        $index = array_search($name, $this->Data);
 
         if($index)
             unset ($this->Data[$name]);
