@@ -4,11 +4,7 @@ require_once 'main.inc.php';
 
 
 /**
- * A simple interface for objects which returns data at the initializing process
- * of the kernel object. Due to this objects it is possible to hand data from
- * one to page to one another.
- * E.g. if you have the session id in the URL it is automatically added to every
- * link you create with the GetLink method of the kernel.
+ * Data providers take care about storing data for the whole session.
  */
 interface IDataProvider {
     /**
@@ -17,44 +13,30 @@ interface IDataProvider {
     public function GetData();
 
     /**
-     * Removes the value with the given name from this data provider.
+     * Gets the associative array which is constructed by the data sinks and
+     * filters for data which should be stored.
      */
-    public function UnsetValue($name);
+    public function Initialize($sinkData);
 }
 
 /*
- * In difference to the IDataProvider a IDataSink is the last point of data.
- * data sinks take care to remove data from the DataAccessor. This objects are
- * needed to give them the oppurtunity to act on differenct conditions which are
- * able to change.
- *
- * (E.g. connection to the DB are possible.) The default data sink removes every
- * POST-parameter which name begins with "form." and every GET-parameter which
- * begins with "tmp."
+ * A data sinkt takes care about getting data. Default data sinks in this project
+ * are there for HTTP GET and HTTP POST data. This objects only collect data and
+ * returns them in a associative array.
  */
 interface IDataSink {
     /**
-     * Returns the name of the sink object.
+     * Initializes the specific data sink object.
      */
-    public function GetName();
+    public function Initialize();
 
     /**
-     * Checks if the given name matches the condition to remove the name value
-     * pair from the data providers.
+     * Returns the data of this data sink as associative array.
      */
-    public function IsTemporary($name);
+    public function GetData();
 }
 
 /**
- * Handles the access to the data arround the HTTP-session. This object
- * contains a list of data providers of storing data for the whole session, so
- * that data doesn't get lost after clicking a link or posting something via
- * a form and a list of data sinks. Data sinks take care about filtering
- * data out of the data providers.
- * Through data sinks it is possible to remove POST data from the session
- * immanent data storing. (E.g. it isn't necessary to store the login form
- * data for the whole session.) But via the data sinks the data keeps after the
- * click temporarly available.
  */
 class DataAccessor {
     /**
@@ -94,20 +76,14 @@ class DataAccessor {
         $this->StoredData = array();
         $this->TemporaryData = array();
 
-        foreach($this->DataProviders as $dataProvider) {
-            $data = $dataProvider->GetData();
-            $this->StoredData = array_merge($this->StoredData, $data);
+        foreach($this->DataSinks as $dataSink) {
+            $dataSink->Initialize();
+            $this->TemporaryData = array_merge($this->TemporaryData, $dataSink->GetData());
         }
 
-        foreach($this->StoredData as $key => $value) {
-            foreach($this->DataSinks as $dataSink) {
-                if($dataSink->IsTemporary($key)) {
-                    $category = $dataSink->GetName();
-
-                    $this->TemporaryData[$category] = array($key => $value);
-                    $this->UnsetValue($key);
-                }
-            }
+        foreach($this->DataProviders as $dataProvider) {
+            $dataProvider->Initialize($this->TemporaryData);
+            $this->StoredData = array_merge($this->StoredData, $dataProvider->GetData());
         }
     }
 
@@ -164,7 +140,7 @@ class DataAccessor {
      */
     public function GetValue($name) { return $this->StoredData[$name]; }
 
-    public function GetTmpValue($category, $name) { return $this->TemporaryData[$category][$name]; }
+    public function GetTmpValue() { return $this->TemporaryData; }
 
     /**
      * Unsets the value with the given name in every data provider.
@@ -253,7 +229,8 @@ class Kernel implements IKernel {
      * 'Standard' is returned.
      */
     private function GetLocationLink() {
-        $name = $this->DataAccessor->GetTmpValue('tmp', 'location');
+        $array = $this->DataAccessor->GetTmpValue();
+        $name = $array['location'];
 
         if($name === null)
             return 'Standard';

@@ -15,6 +15,9 @@ class DataTest extends Page {
         var_dump($storedData);
         echo "<br>";
         var_dump($tmpData);
+
+        echo "<br>" . $tmpData['form']['test'];
+
     }
 
     public function Initialize() {}

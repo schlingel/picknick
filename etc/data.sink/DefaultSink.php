@@ -7,44 +7,98 @@ require_once dirname(__FILE__) . '/../../core/main.inc.php';
  */
 class DefaultSink implements IDataSink {
 
-    protected $LastName;
+    protected $Data;
 
-    /**
-     * Returns the name of the category of the last temporary key value pair.
-     * @return string
-     */
-    public function GetName() {
-        return $this->LastName;
+    public function Initialize() {
+        $array = array();
+        $array = $this->MergeArray($array, $_POST);
+        $array = $this->MergeArray($array, $_GET);
+        $this->Data = array();
+
+        foreach($array as $key => $value) {
+            $parts = explode('/', $key);
+
+            if(count($parts) > 1) {
+                $this->Data = $this->MergeDataWith($key, $value, $this->Data);
+            }
+            else {
+                $this->Data[$key] = $value;
+            }
+        }
     }
 
-    /**
-     * Checks if the given name starts with 'form.', 'tmp.' or if it is 'location'.
-     * If it does it sets the name for GetName to form or tmp and returns true,
-     * otherwise it just returns false.
-     */
-    public function IsTemporary($name) {
-        if($this->BeginsWith($name, 'form.')) {
-            $this->LastName = 'form';
-            return true;
+    private function MergeArray($target, $mergeSource) {
+        foreach($mergeSource as $key => $value) {
+            $target[$key] = $value;
         }
 
-        if($this->BeginsWith($name, 'tmp.') || (strcmp($name, 'location') == 0)) {
-            $this->LastName = 'tmp';
-            return true;
-        }
-
-        return false;
+        return $target;
     }
 
     /**
-     * Checks if the given name starts with the phrase.
+     * Parses the title and generates a hierachy of associative arrays which
+     * the last part contains the given value. This is merged into the given
+     * array and returned.
      */
-    private function BeginsWith($name, $phrase) {
-        $length = strlen($phrase);
-        $begin = substr($name, 0, $length);
+    private function MergeDataWith($title, $value, $array) {
+        $p = &$array;
+        $names = explode('/', $title);
+        
+        for($i = 0; $i < count($names); $i++) {
+            $n = $names[$i];
 
-        return ($begin === $phrase);
+            if(!isset($p[$n]) || !is_array($p[$n]))
+                $p[$n] = array();
+
+            $p = &$p[$n];
+        }
+
+        $p = $value;
+        return $array;
     }
+    
+    /**
+     * Adds the given value in the top-down array hierachy, determined by the
+     * names list which is upwards tree, to the given array.
+     * @param array(mixed) $array
+     * @param array(string) $names
+     * @param mixed $value
+     */
+    private function BuildMultilevelAssocArray($array, $names, $value) {
+       $length = count($names) - 1;
+       $key = $names[$length];
+       $tmp = $array;
+
+       for($i = 0; $i < $length; $i++) {
+           $name = $names[$i];
+
+           if(!is_array($tmp[$name]))
+               $tmp[$name] = array();
+
+           $tmp = $tmp[$name];
+       }
+
+       $tmp[$key] = $value;
+       return $array;
+    }
+
+    /**
+     * Splits the given name by the '/' as delimiter and return the parts of the
+     * name.
+     */
+    private function GetNames($name) {
+        return explode('/', $name);
+    }
+
+    private function IsMultipartName($name) { 
+        return count($this->GetNames($name)) > 0;
+    }
+
+    /**
+     * Returns the data of this sink.
+     * @return array(mixed)
+     */
+    public function GetData() { return $this->Data; }
 }
 
 ?>
