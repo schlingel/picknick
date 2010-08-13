@@ -41,19 +41,19 @@ class DefaultSink implements IDataSink {
      * array and returned.
      */
     private function MergeDataWith($title, $value, $array) {
-        $p = &$array;
+        $currentArray = &$array;
         $names = explode('/', $title);
         
         for($i = 0; $i < count($names); $i++) {
-            $n = $names[$i];
+            $name = $names[$i];
 
-            if(!isset($p[$n]) || !is_array($p[$n]))
-                $p[$n] = array();
+            if(!isset($currentArray[$name]) || !is_array($currentArray[$name]))
+                $currentArray[$name] = array();
 
-            $p = &$p[$n];
+            $currentArray = &$currentArray[$name];
         }
 
-        $p = $value;
+        $currentArray = $value;
         return $array;
     }
     
