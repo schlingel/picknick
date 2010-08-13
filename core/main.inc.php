@@ -71,6 +71,9 @@ define('__URL__', "http://{$_SERVER['SERVER_NAME']}/" . __PROJECT__);
 require_once dirname(__FILE__) . '/exceptions.php';
 require_once dirname(__FILE__) . '/logging.php';
 require_once dirname(__FILE__) . '/page.php';
+
+include_dir(dirname(__FILE__) . '/kernel.additions');
+
 require_once dirname(__FILE__) . '/kernel.php';
 require_once dirname(__FILE__) . '/../etc/database.helper.php';
 
