@@ -2,7 +2,6 @@
 
 require_once dirname(__FILE__) . '/../main.inc.php';
 
-
 /**
  * Data providers take care about storing data for the whole session.
  */
