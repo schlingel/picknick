@@ -1,4 +1,7 @@
 <?php
+
+require_once dirname(__FILE__) . '/../main.inc.php';
+
 /**
  * The interface for objects which write html code to the page. The place for
  * classes which implements the interface is in /etc/html.helper/
