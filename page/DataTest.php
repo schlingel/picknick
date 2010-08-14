@@ -11,7 +11,7 @@ class DataTest extends Page {
         $this->GetTemplate('navigation/links');
         $storedData = $this->GetDataStore();
         $tmpData = $this->GetTmpData();
-        
+
         var_dump($storedData);
         echo "<br>";
         var_dump($tmpData);

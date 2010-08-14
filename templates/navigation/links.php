@@ -7,5 +7,4 @@
 ?>
 <ul style="display: table-row;">
     <li><?php $this->WriteLink('standard', 'Home'); ?> </li>
-    <li><?php $this->WriteLink('datatest', 'Datentest'); ?> </li>
 </ul>

@@ -2,7 +2,6 @@
 
 require_once 'main.inc.php';
 
-
 /**
  * The definition of the signature a picknick kernel should have.
  */

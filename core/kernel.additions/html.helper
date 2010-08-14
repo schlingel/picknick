@@ -1,0 +1,11 @@
+<?php
+/**
+ * The interface for objects which write html code to the page.
+ */
+interface IHtmlHelper {
+    public function GetName();
+
+    public function WriteElement($name, $params);
+}
+
+?>

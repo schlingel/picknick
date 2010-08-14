@@ -12,7 +12,6 @@ class Standard extends Page {
     }
 
     public function Initialize() {
-        ;
     }
 }
 
