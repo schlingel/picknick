@@ -74,7 +74,7 @@ class HtmlWriter {
      */
     public function Write($name, $tag, $parameter) {
         foreach($this->HtmlHelpers as $htmlHelper) {
-            if(strcasecmp($name, $htmlHelper->GetName())) {
+            if(strcasecmp($name, $htmlHelper->GetName()) == 0) {
                 $htmlHelper->WriteElement($tag, $parameter);
                 return;
             }
