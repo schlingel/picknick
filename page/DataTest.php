@@ -18,6 +18,8 @@ class DataTest extends Page {
 
         echo "<br>" . $tmpData['form']['test'];
 
+        $this->GetTemplate('Form');
+
     }
 
     public function Initialize() {}

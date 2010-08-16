@@ -17,7 +17,7 @@ interface IHtmlHelper {
      * Initializes the specific object with the data in the data providers and
      * sinks.
      */
-    public function Initialize($storedData, $tmpData);
+    public function Initialize($storedData);
 
     /**
      * Writes the specific element to the current position when the method is
