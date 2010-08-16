@@ -118,6 +118,8 @@ abstract class Page {
     public function GetDataStore() { return $this->Host->GetDataAccessor()->GetAssocArray(); }
 
     public function GetTmpData() { return $this->Host->GetDataAccessor()->GetTmpData(); }
-}
 
+    public function WriteElement($name, $tag, $params) {
+        $this->Host->WriteHtml($name, $tag, $params);
+    }
 ?>

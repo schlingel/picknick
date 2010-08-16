@@ -32,6 +32,13 @@ interface IKernel {
      * Shows the selected page.
      */
     public function ShowPage();
+
+    /**
+     * If a html helper with the given name exists, writes the wanted tag to the
+     * page.
+     */
+    public function WriteHtml($name, $tag, $params);
+
 }
 
 /**
@@ -45,9 +52,12 @@ class Kernel implements IKernel {
 
     protected $CurrentPage;
 
+    protected $HtmlWriter;
+
     public function  __construct() {
         $this->Logger = new LoggingPublisher();
         $this->DataAccessor = new DataAccessor();
+        $this->HtmlWriter = new HtmlWriter();
 
         $this->Initialize();
     }
@@ -59,8 +69,10 @@ class Kernel implements IKernel {
         $this->GetLoggerFromEtc();
         $this->GetDataProviderFromEtc();
         $this->GetDataSinkFromEtc();
+        $this->GetHtmlHelperFromEtc();
 
         $this->DataAccessor->Initialize();
+        $this->HtmlWriter->Initialize($this->DataAccessor->GetAssocArray());
 
         $this->CurrentPage = $this->GetPage($this->GetLocationLink());
         $this->CurrentPage->Initialize();
@@ -107,13 +119,29 @@ class Kernel implements IKernel {
     }
 
     /**
+     * Parses the ../etc/html.helper directory and tries to create objects from
+     * the file names. The pattern is FILE_NAME.php and creates a call like this:
+     * bla = new FILE_NAME(); and adds this objects to the html writer module.
+     */
+    private function GetHtmlHelperFromEtc() {
+        $path = dirname(__FILE__) . '/../etc/html.helper';
+        $filenames = $this->GetFileNamesFrom($path);
+        $htmlWriter = $this->HtmlWriter;
+
+        foreach($filenames as $filename) {
+            $pureName = substr($filename, 0, strlen($filename) - 4);
+            eval("\$htmlWriter->AddHtmlHelper(new {$pureName}());");
+        }
+        
+    }
+
+    /**
      * Parses the etc/data.provider/ directory and adds the the containing
      * data provider to the kernel.
      */
     private function GetDataProviderFromEtc() {
         $path = dirname(__FILE__) . '/../etc/data.provider';
         $filenames = $this->GetFileNamesFrom($path);
-
         $accessor = $this->DataAccessor;
 
         foreach($filenames as $filename) {
@@ -217,6 +245,14 @@ class Kernel implements IKernel {
      * @return LoggingPublisher
      */
     public function GetLogger() { return $this->Logger; }
+
+    /**
+     * If a html helper with the given name exists, writes the wanted tag to the
+     * page.
+     */
+    public function WriteHtml($name, $tag, $params) {
+       $this->HtmlWriter->Write($name, $tag, $params);
+    }
 }
 
 ?>
