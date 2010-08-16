@@ -61,6 +61,24 @@ class HtmlWriter {
         if($index)
             unset($this->HtmlHelpers[$index]);
     }
+
+    /**
+     * Writes the given data out to the page. Throws an ObjectNotFoundException
+     * when the needed html helper object is not in the list.
+     * @param string $name The name of the html helper object.
+     * @param string $tag The name of the tag which the html helper should print.
+     * @param array(mixed) $parameter the associative array of tag attributes.
+     */
+    public function Write($name, $tag, $parameter) {
+        foreach($this->HtmlHelpers as $htmlHelper) {
+            if($name === $htmlHelper->GetName()) {
+                $htmlHelper->WriteElement($tag, $parameter);
+                return;
+            }
+        }
+
+        throw new ObjectNotFoundException("Couldn't find the given HtmlHelper object!");
+    }
 }
 
 ?>
