@@ -122,4 +122,5 @@ abstract class Page {
     public function WriteElement($name, $tag, $params) {
         $this->Host->WriteHtml($name, $tag, $params);
     }
+}
 ?>
