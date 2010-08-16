@@ -32,6 +32,10 @@ interface IHtmlHelper {
  * A little class to minimize the write effort for the user.
  */
 abstract class HtmlHelper implements IHtmlHelper {
+    /**
+     * Contains the html helper tag objects.
+     */
+    protected $HtmlHelperTags;
 
     /**
      * Contains the the stored data. (data in data providers)
@@ -47,48 +51,22 @@ abstract class HtmlHelper implements IHtmlHelper {
     }
 
     /**
-     * Creates a start tag with the given parameter as attributes.
-     * @param string $name
-     * @param array(mixed) $parameter
-     * @return string
+     * Writes the wanted element to the page.
+     * @param string $name The name of the tag
+     * @param array(mixed) $params The attributes of the tag.
+     * @return void
      */
-    protected function GetTagStart($name, $parameter) {
-        $attributes = '';
-
-        foreach($parameter as $key => $value) {
-            $attributes = $attributes . "{$key}=\"{$value}\" ";
+    public function  WriteElement($name, $params) {
+        foreach($this->HtmlHelperTags as $helperTag) {
+            if(strcasecmp($name, $helperTag->GetName()) == 0) {
+                echo $helperTag->GetTag($params);
+                return;
+            }  
         }
 
-        return "<{$name} {$attributes} >";
-    }
-
-    /**
-     * Returns a endtag of the given element name.
-     * @param string $name
-     * @return string
-     */
-    protected function GetEndTag($name) {
-        return "<{$name} />";
-    }
-
-    /**
-     * Returns a tag which can be used for tags which end which have no body.
-     * (e.g. <br> <input> and so on)
-     * @param string $name
-     * @param array(mixed) $params
-     * @param boolean $endWithSlash
-     * @return string
-     */
-    protected function GetSingleTag($name, $params=array(), $endWithSlash=true) {
-        $end = $endWithSlash ? '/>' : '>';
-        $attributes = '';
-
-        foreach($params as $key => $value) {
-            $attributes = $attributes . "{$key}=\"{$value}\" ";
-        }
-
-        return "<{$name} {$attributes}{$end}";
+        throw new ObjectNotFoundException("Couldn't find the wanted tag helper object!");
     }
 }
+
 
 ?>

@@ -12,25 +12,59 @@ class FormHelper extends HtmlHelper {
      */
     public function GetName() { return 'form'; }
 
-    /**
-     * Writes the specific form element to the page.
-     * @param string $name
-     * @param array(mixed) $params
-     */
-    public function  WriteElement($name, $params) {
-        if(strcasecmp($name, 'start')) {
-            echo $this->GetTagStart('form', $params) . "\n";
+    public function  __construct() {
+        $this->HtmlHelperTags = array(
+            new FormEndTag(),
+            new FormInputTag(),
+            new FormStartTag()
+        );
+    }
+}
 
-            foreach($this->StoredData as $key => $value) {
-                echo $this->GetSingleTag('input', array('type' => 'hidden', 'name' => $key, 'value' => $value)) . "\n";
-            }
-        }
-        else if(strcasecmp($name, 'end')) {
-            echo $this->GetEndTag('form') . "\n";
-        }
-        else if(strcasecmp($name, 'input')) {
-            echo $this->GetSingleTag('input', $params) . "\n";
-        }
+/**
+ * The start tag of a form.
+ */
+class FormStartTag extends HtmlHelperTag {
+    public function  __construct() {
+        $this->Name = 'start';
+    }
+
+    /**
+     * Returns the form start tag with the given attributes.
+     * @return string
+     */
+    public function  GetTag($parameter) {
+        return $this->GetTagStart('form', $parameter);
+    }
+}
+
+/**
+ * The end tag of the form element.
+ */
+class FormEndTag extends HtmlHelperTag {
+    public function  __construct() {
+        $this->Name = 'end';
+    }
+
+    public function GetTag($parameter) {
+        return $this->GetEndTag('form');
+    }
+}
+
+/**
+ * The input object in the form.
+ */
+class FormInputTag extends HtmlHelperTag {
+    public function __construct() {
+        $this->Name = 'input';
+    }
+
+    /**
+     * Returns the input tag element
+     * @return string
+     */
+    public function GetTag($parameter) {
+        return $this->GetTagStart('input', $parameter);
     }
 }
 
