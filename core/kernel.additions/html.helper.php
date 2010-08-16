@@ -34,12 +34,6 @@ interface IHtmlHelper {
 abstract class HtmlHelper implements IHtmlHelper {
 
     /**
-     * Contains the temporary data (data in data sinks)
-     * @var array(mixed)
-     */
-    protected $TmpData;
-
-    /**
      * Contains the the stored data. (data in data providers)
      * @var array(mixed)
      */
@@ -48,9 +42,8 @@ abstract class HtmlHelper implements IHtmlHelper {
     /**
      * Initializes the object with the given stored and temporary saved data.
      */
-    public function  Initialize($storedData, $tmpData) {
+    public function  Initialize($storedData) {
         $this->StoredData = $storedData;
-        $this->TmpData = $tmpData;
     }
 
     /**
