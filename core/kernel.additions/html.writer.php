@@ -20,18 +20,21 @@ class HtmlWriter {
     protected $StoredData;
 
     /**
-     * The array of the data in the data sinks.
-     * @var array(mixed)
-     */
-    protected $TmpData;
-
-    /**
      * Initializes the HtmlWriter object.
      */
-    public function  __construct($storedData, $tmpData) {
+    public function  __construct() {
         $this->HtmlHelpers = array();
-        $this->StoredData = $storedData;
-        $this->TmpData = $tmpData;
+        $this->StoredData = array();
+    }
+
+    /**
+     * Initilizes the html helper objects with the given stored data.
+     * @param array(mixed) $storedData
+     */
+    public function Initialize($storedData) {
+        foreach($this->HtmlHelpers as $htmlHelper) {
+            $htmlHelper->Intialize($this->StoredData);
+        }
     }
 
     /**
