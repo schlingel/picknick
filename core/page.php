@@ -39,6 +39,12 @@ abstract class Page {
      */
     public abstract function ShowBody();
 
+    /**
+     * Checks if the given template name points to an existing template.
+     * If the template exists it gets included, otherwhise a FileNotFoundException
+     * gets throwen.
+     * @param string $name
+     */
     protected function GetTemplate($name) {
         $path = dirname(__FILE__) . "/../templates/{$name}.php";
 
