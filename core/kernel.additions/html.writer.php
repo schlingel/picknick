@@ -33,7 +33,7 @@ class HtmlWriter {
      */
     public function Initialize($storedData) {
         foreach($this->HtmlHelpers as $htmlHelper) {
-            $htmlHelper->Intialize($this->StoredData);
+            $htmlHelper->Initialize($this->StoredData);
         }
     }
 

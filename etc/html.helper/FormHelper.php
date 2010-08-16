@@ -32,7 +32,6 @@ class FormHelper extends HtmlHelper {
             echo $this->GetSingleTag('input', $params) . "\n";
         }
     }
-    
 }
 
 ?>

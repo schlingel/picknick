@@ -79,6 +79,7 @@ require_once dirname(__FILE__) . '/../etc/database.helper.php';
 
 include_dir(dirname(__FILE__) . '/../etc/data.provider');
 include_dir(dirname(__FILE__) . '/../etc/data.sink');
+include_dir(dirname(__FILE__) . '/../etc/html.helper');
 include_dir(dirname(__FILE__) . '/../page');
 
 ?>
