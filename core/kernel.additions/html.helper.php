@@ -52,6 +52,50 @@ abstract class HtmlHelper implements IHtmlHelper {
         $this->StoredData = $storedData;
         $this->TmpData = $tmpData;
     }
+
+    /**
+     * Creates a start tag with the given parameter as attributes.
+     * @param string $name
+     * @param array(mixed) $parameter
+     * @return string
+     */
+    protected function GetTagStart($name, $parameter) {
+        $attributes = '';
+
+        foreach($parameter as $key => $value) {
+            $attributes = $attributes . "{$key}=\"{$value}\" ";
+        }
+
+        return "<{$name} {$attributes} >";
+    }
+
+    /**
+     * Returns a endtag of the given element name.
+     * @param string $name
+     * @return string
+     */
+    protected function GetEndTag($name) {
+        return "<{$name} />";
+    }
+
+    /**
+     * Returns a tag which can be used for tags which end which have no body.
+     * (e.g. <br> <input> and so on)
+     * @param string $name
+     * @param array(mixed) $params
+     * @param boolean $endWithSlash
+     * @return string
+     */
+    protected function GetSingleTag($name, $params=array(), $endWithSlash=true) {
+        $end = $endWithSlash ? '/>' : '>';
+        $attributes = '';
+
+        foreach($params as $key => $value) {
+            $attributes = $attributes . "{$key}=\"{$value}\" ";
+        }
+
+        return "<{$name} {$attributes}{$end}";
+    }
 }
 
 ?>
