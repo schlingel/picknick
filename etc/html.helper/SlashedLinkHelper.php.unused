@@ -1,7 +1,23 @@
 <?php
-/* 
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
+require_once dirname(__FILE__) .  '/../../core/main.inc.php';
+
+class SlashedLinkHelper extends HtmlHelper {
+    public function GetName() { return 'link'; }
+
+    public function  __construct() {
+        $this->StoredData = array(
+            new DefaultLinkHrefTag()
+        );
+    }
+}
+
+class SlashedLinkHrefTag extends HtmlHelperTag {
+    public function GetName() { return 'a'; }
+
+    public function GetTag($parameter) {
+        ;
+    }
+}
 
 ?>
