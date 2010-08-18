@@ -6,4 +6,6 @@ class FileNotFoundException extends Exception { }
 class ObjectNotFoundException extends Exception { }
 
 class LocationNotFoundException extends Exception { }
+
+class InvalidArgsException extends Exception { }
 ?>
