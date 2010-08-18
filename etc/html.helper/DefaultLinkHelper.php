@@ -33,7 +33,7 @@ class DefaultLinkHrefTag extends HtmlHelperTag {
     public function  GetTag($parameter) {
         if(!isset ($parameter['location']))
             new LocationNotFoundeException("No location was set!");
-        
+
         $location = $parameter['location'];
 
         if(!$this->PageExist($location))
@@ -50,13 +50,14 @@ class DefaultLinkHrefTag extends HtmlHelperTag {
 
         $parameter['href'] = $this->GetHrefForPage($location, $kernelFile);
 
+
         return $this->GetSingleTag('a', $parameter, true);
     }
 
     /**
      * Checks if the given location is mapped to an existing page class file.
      * @param string $location
-     * @return boolean 
+     * @return boolean
      */
     private function PageExist($location) {
         $path = dirname(__FILE__) . "/../../page/{$location}.php";
@@ -79,6 +80,7 @@ class DefaultLinkHrefTag extends HtmlHelperTag {
         }
 
         $href = __URL__ . "{$kernelFile}{$getparams}";
+
         return $href;
     }
 }
