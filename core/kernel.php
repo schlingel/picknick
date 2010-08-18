@@ -38,7 +38,6 @@ interface IKernel {
      * page.
      */
     public function WriteHtml($name, $tag, $params);
-
 }
 
 /**

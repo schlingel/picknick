@@ -16,7 +16,9 @@ class FormHelper extends HtmlHelper {
         $this->HtmlHelperTags = array(
             new FormEndTag(),
             new FormInputTag(),
-            new FormStartTag()
+            new FormStartTag(),
+            new FormHiddenTag(),
+            new FormTextAreaTag()
         );
     }
 }
@@ -65,6 +67,40 @@ class FormInputTag extends HtmlHelperTag {
      */
     public function GetTag($parameter) {
         return $this->GetTagStart('input', $parameter);
+    }
+}
+
+class FormTextAreaTag extends HtmlHelperTag {
+    public function __construct() {
+        $this->Name = 'textarea';
+    }
+
+    /**
+     * Returns a textarea form element block.
+     * @param array(mixed) $parameter
+     * @return string Returns 
+     */
+    public function GetTag($parameter) {
+        $code = $this->GetTagStart('textarea', $parameter);
+        $code = "{$code}\n" . $this->GetEndTag('textarea');
+        return $code;
+    }
+}
+
+class FormHiddenTag extends HtmlHelperTag {
+    public function __construct() {
+        $this->Name = 'hidden';
+    }
+
+    public function GetTag($parameter) {
+        if(is_array($parameter)) {
+            $parameter['type'] = 'hidden';
+        }
+        else {
+            $parameter = array( 'type' => 'hidden');
+        }
+
+        return $this->GetSingleTag('input', $parameter, true);
     }
 }
 
