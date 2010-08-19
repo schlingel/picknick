@@ -69,7 +69,19 @@ class DefaultLinkHrefTag extends HtmlHelperTag {
     }
 }
 
+/**
+ * This class handles the creation of links which carry the information the URL
+ * itself seperated with slashes instead of GET parameters.
+ */
 class SlashedLinkHrefTag extends DefaultLinkHrefTag {
+    /**
+     * Returns the link with the parameters as data in the url seperated with
+     * slashes.
+     * @param string $location
+     * @param array(mixed) $parameter
+     * @param string $kernelFile
+     * @return string
+     */
     protected function  GetHrefForPage($location, $parameter, $kernelFile) {
         $location = str_replace(array('/'), array('.'), $location);
         $kernelFile = substr($kernelFile, 0, strlen($kernelFile) - 4);
