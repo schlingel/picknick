@@ -29,7 +29,12 @@ class DefaultSink implements IDataSink {
 
     private function MergeArray($target, $mergeSource) {
         foreach($mergeSource as $key => $value) {
-            $target[$key] = $value;
+            if(is_array($target[$key]) && is_array($mergeSource[$key])) {
+                $target[$key] = $this->MergeArray($target[$key], $mergeSource[$key]);
+            }
+            else {
+                $target[$key] = $value;
+            }
         }
 
         return $target;
