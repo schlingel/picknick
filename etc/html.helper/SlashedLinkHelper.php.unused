@@ -7,17 +7,8 @@ class SlashedLinkHelper extends HtmlHelper {
 
     public function  __construct() {
         $this->StoredData = array(
-            new DefaultLinkHrefTag()
+            new SlashedLinkHelperTag()
         );
     }
 }
-
-class SlashedLinkHrefTag extends HtmlHelperTag {
-    public function GetName() { return 'a'; }
-
-    public function GetTag($parameter) {
-        ;
-    }
-}
-
 ?>
