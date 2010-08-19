@@ -45,7 +45,10 @@ class UrlDataSink implements IDataSink {
         
         for($i = 0; $i < count($parts);) {
             $key = $parts[$i];
-            $value = $parts[$i + 1];
+            // This happens because the SlashedLinkHelper changes the slashes
+            // of values like location links to page/post/34  to page.post.34
+            // in this step the values are retranslated.
+            $value = str_replace(array('.'), array('/'), $parts[$i + 1]);
             $i += 2;
 
             $this->TmpData[$key] = $value;
