@@ -16,7 +16,7 @@ class SlashedLinkHelper extends HtmlHelper {
  * This class handles the creation of links which carry the information the URL
  * itself seperated with slashes instead of GET parameters.
  */
-class SlashedLinkHrefTag extends DefaultLinkHrefTag {
+class SlashedLinkHrefTag extends HtmlHelperTag {
     /**
      * Returns the name of this html helper tag. 'a'
      */
