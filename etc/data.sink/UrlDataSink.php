@@ -35,7 +35,7 @@ class UrlDataSink implements IDataSink {
     // loaded all the time.
     private function InitializeData() {
         $dataString = $this->GetDataString();
-        if($dataString == "")
+        if($dataString === '')
             return;
         
         $parts = explode('/', $dataString);
@@ -56,17 +56,45 @@ class UrlDataSink implements IDataSink {
     }
 
     /**
+     * Checks if the given url has this form: domain/landingpage/value1/value2/...
+     * @param string $url
+     * @return boolean
+     */
+    private function IsDataUrl($url) {
+        return preg_match("/(\/)((a-zA-Z0-9\.\-)+(\/))+/", $url);
+    }
+
+    /**
      * Extracts the data containing string from the request uri.
      * @return string
      */
     private function GetDataString() {
         $wholeString = $_SERVER['REQUEST_URI'];
-        $scriptName = $_SERVER['SCRIPT_NAME'];
 
-        // wholeString starts with the kernel name, but without the .php. This
-        // gets removed.
-        $dataString = substr($wholeString, 0, strlen($scriptName) - 4);
-        return $dataString;
+        if(!$this->IsDataUrl($wholeString))
+            return '';
+        
+        return $this->RemoveNonDataUrlPart($wholeString);
+    }
+
+    /**
+     * Removes the not kernel reference and the project dir from the url.
+     * @param string the url
+     * @return string
+     */
+    private function RemoveNonDataUrlPart($url) {
+        if(strlen(__PROJECT__) > 0) {
+            // This way the the string "/__PROJECT__/" gets removes from the
+            // url.
+            $count = strlen(__PROJECT__) + 2;
+            $url = substr($url, 0, $count);
+        }
+
+        // The following code removes the "LANDINGPAGE/" string.
+        $parts = explode('/', $url);
+        $count = strlen($parts[0]) + 1;
+
+        return substr($url, 0, $count);
     }
 
     /**
