@@ -61,7 +61,8 @@ class UrlDataSink implements IDataSink {
      * @return boolean
      */
     private function IsDataUrl($url) {
-        return preg_match("/(\/)((a-zA-Z0-9\.\-)+(\/))+/", $url);
+        //return preg_match("/(\/)((a-zA-Z0-9\.\-)+(\/))+/", $url);
+        return true;
     }
 
     /**
@@ -86,15 +87,17 @@ class UrlDataSink implements IDataSink {
         if(strlen(__PROJECT__) > 0) {
             // This way the the string "/__PROJECT__/" gets removes from the
             // url.
-            $count = strlen(__PROJECT__) + 2;
-            $url = substr($url, 0, $count);
+            $count = strlen(__PROJECT__) + 1;
+            $url = substr($url, $count);
         }
 
         // The following code removes the "LANDINGPAGE/" string.
         $parts = explode('/', $url);
         $count = strlen($parts[0]) + 1;
 
-        return substr($url, 0, $count);
+        $url = substr($url, $count);
+        $url = substr($url, 0, strlen($url) - 1);
+	return $url;
     }
 
     /**
