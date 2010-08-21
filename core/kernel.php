@@ -51,6 +51,13 @@ interface IKernel {
      * @return string
      */
     public function GetHtml($name, $tag, $params);
+
+    /**
+     * Sets the current page to the given page.
+     * @param Page $page
+     * @return void
+     */
+    public function SetPage($page);
 }
 
 /**
@@ -299,6 +306,19 @@ class Kernel implements IKernel {
      * @return string
      */
     public function GetHtml($name, $tag, $params) { return $this->HtmlWriter->Get($name, $tag, $params); }
+
+    /*
+     * Sets the current page to the given page. Throws a WrongTypeException if
+     * the given parameter isn't a Page type.
+     * @param Page page
+     * @return void
+     */
+    public function SetPage($page) {
+        if(!($page instanceof Page))
+            throw new WrongTypeException ("The page parameter must be of the type Page!");
+
+        $this->CurrentPage = $page;
+    }
 }
 
 ?>

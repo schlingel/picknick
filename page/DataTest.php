@@ -20,7 +20,7 @@ class DataTest extends Page {
 
     }
 
-    public function Initialize() {}
+    public function Initialize() { }
 }
 
 ?>
