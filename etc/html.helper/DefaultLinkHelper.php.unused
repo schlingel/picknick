@@ -1,4 +1,7 @@
 <?php
+
+require_once dirname(__FILE__) . '/../../core/main.inc.php';
+
 /**
  * The html helper class which creates links which works with GET parameter.
  */
@@ -7,8 +10,8 @@ class DefaultLinkHelper extends HtmlHelper {
 
     public function  __construct() {
         $this->HtmlHelperTags = array(
-            new SlashedLinkHrefTag(),
-            new SlashedHrefTag()
+            new DefaultLinkHrefTag(),
+            new DefaultHrefTag()
         );
     }
 }
@@ -19,7 +22,7 @@ class DefaultLinkHelper extends HtmlHelper {
 // This is needed as extra class to provide the user a way to get hrefs which
 // are compatible to the picknick system without hacking something extra ordinary
 // or to parse the href parameter from the html tag.
-class SlashedHrefTag extends HtmlHelperTag {
+class DefaultHrefTag extends HtmlHelperTag {
 
     /**
      * @var NonLinkParameter contains the names of the fields which shouldn't be
@@ -88,16 +91,15 @@ class SlashedHrefTag extends HtmlHelperTag {
      * @param string kernelFile
      * @return string
      */
-    protected function GetHrefForPage($location, $parameter=array(), $kernelFile=__DEFAULT_KERNEL_LOCATION__) {
-        $getparams = "/{$location}/";
+    protected function GetHrefForPage($location, $parameter=array(), $kernelFile=__DEFAULT_KERNEL_FILE__) {
+        $getparams = "?location={$location}";
 
         foreach($parameter as $key => $value) {
-            $key = str_replace(array('/'), array('.'), $key);
-            $value = str_replace(array('/'), array('.'), $value);
-            $getparams = $getparams . "{$key}/{$value}/";
+            $getparams = $getparams . "&{$key}={$value}";
         }
 
         $href = __URL__ . "{$kernelFile}{$getparams}";
+
         return $href;
     }
 }
@@ -105,7 +107,7 @@ class SlashedHrefTag extends HtmlHelperTag {
 /**
  * The HTML helper tag class which creates links which works with GET parameters.
  */
-class SlashedLinkHrefTag extends SlashedHrefTag {
+class DefaultLinkHrefTag extends DefaultHrefTag {
     /**
      * Returns the name of this html helper tag. 'a'
      */
@@ -121,7 +123,7 @@ class SlashedLinkHrefTag extends SlashedHrefTag {
         $text = $parameter['text'];
         $parameter['href'] = parent::GetTag($parameter);
         $parameter = $this->UnsetParameters(self::$NonLinkParameter, $parameter);
-
+        
         $aTag = $this->GetTagStart('a', $parameter);
         $aTag = "{$aTag}{$text}" . $this->GetEndTag('a');
         return $aTag;

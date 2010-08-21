@@ -4,7 +4,7 @@ require_once dirname(__FILE__) . '/../core/main.inc.php';
 
 class DataTest extends Page {
 
-    public function GetTitle() { return "Invalid Link - Got trolled ..."; }
+    public function GetTitle() { return "Data test - how did you know?"; }
 
     public function ShowBody() {
 
