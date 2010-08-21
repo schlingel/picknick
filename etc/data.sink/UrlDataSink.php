@@ -44,14 +44,21 @@ class UrlDataSink implements IDataSink {
             throw new InvalidArgsException("The URL parameters have no value for every key!");
         
         for($i = 0; $i < count($parts);) {
-            $key = $parts[$i];
+            $key = str_replace(array('.'), array('/'), $parts[$i]);
             // This happens because the SlashedLinkHelper changes the slashes
             // of values like location links to page/post/34  to page.post.34
             // in this step the values are retranslated.
             $value = str_replace(array('.'), array('/'), $parts[$i + 1]);
             $i += 2;
 
-            $this->TmpData[$key] = $value;
+            $keyParts = explode('/', $key);
+
+            if(count($keyParts) > 1) {
+                $this->TmpData = MergeDataWith($key, $value, $this->TmpData);
+            }
+            else {
+                $this->TmpData[$key] = $value;
+            }
         }
     }
 
