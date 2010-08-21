@@ -41,10 +41,10 @@ abstract class HtmlHelperTag implements IHtmlHelperTag {
         $attributes = '';
 
         foreach($parameter as $key => $value) {
-            $attributes = $attributes . "{$key}=\"{$value}\" ";
+            $attributes = $attributes . " {$key}=\"{$value}\"";
         }
 
-        return "<{$name} {$attributes}>";
+        return "<{$name}{$attributes}>";
     }
 
     /**

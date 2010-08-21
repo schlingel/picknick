@@ -39,19 +39,32 @@ class DefaultLinkHrefTag extends HtmlHelperTag {
         if(!$this->PageExist($location))
             throw new LocationNotFoundException("The location {$lcoation} does not exist!");
 
-        unset($parameter['location']);
+        $alt = (isset($parameter['alt'])) ? $parameter['alt'] : "Link to {$location}";
+        $text = (isset($parameter['text'])) ? $parameter['text'] : $location;
+        $kernelFile = (isset($parameter['kernel'])) ? $parameter['kernel'] : DEFAULT_KERNEL_FILE;
 
-        $kernelFile = 'index.php';
-
-        if(isset($parameter['kernel'])) {
-            $kernelFile = $parameter['kernel'];
-            unset($parameter['kernel']);
-        }
-
+        $parameter = $this->UnsetParameters(array('alt', 'text', 'kernel', 'location'), $parameter);
         $parameter['href'] = $this->GetHrefForPage($location, $parameter, $kernelFile);
 
+        $aTag = $this->GetTagStart('a', $parameter);
+        $aTag = "{$aTag}{$text}" . $this->GetEndTag('a');
+        return $aTag;
+    }
 
-        return $this->GetSingleTag('a', $parameter, true);
+    /**
+     * Unsets the given keys in the parameter array and returns the filtered array.
+     * @param array(string) $names
+     * @param array(mixed) $array
+     * @return array(mixed)
+     */
+    private function UnsetParameters($names, $array) {
+        foreach($names as $name) {
+            if(isset($array[$name])) {
+                unset($array[$name]);
+            }
+        }
+
+        return $array;
     }
 
     /**
