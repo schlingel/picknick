@@ -129,7 +129,6 @@ class Kernel implements IKernel {
 
         foreach($filenames as $filename) {
             $pureName = substr($filename, 0, strlen($filename) - 4);
-            echo "\$htmlWriter->AddHtmlHelper(new {$pureName}());<br>";
             eval("\$htmlWriter->AddHtmlHelper(new {$pureName}());");
         }
         

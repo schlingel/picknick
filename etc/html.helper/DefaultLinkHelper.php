@@ -48,7 +48,7 @@ class DefaultLinkHrefTag extends HtmlHelperTag {
             unset($parameter['kernel']);
         }
 
-        $parameter['href'] = $this->GetHrefForPage($location, $kernelFile);
+        $parameter['href'] = $this->GetHrefForPage($location, $parameter, $kernelFile);
 
 
         return $this->GetSingleTag('a', $parameter, true);
@@ -72,7 +72,7 @@ class DefaultLinkHrefTag extends HtmlHelperTag {
      * @param string kernelFile
      * @return string
      */
-    protected function GetHrefForPage($location, $parameter, $kernelFile=DEFAULT_KERNEL_FILE) {
+    protected function GetHrefForPage($location, $parameter=array(), $kernelFile=DEFAULT_KERNEL_FILE) {
         $getparams = "?location={$location}";
 
         foreach($parameter as $key => $value) {
