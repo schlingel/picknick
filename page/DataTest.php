@@ -16,8 +16,6 @@ class DataTest extends Page {
         echo "<br>";
         var_dump($tmpData);
 
-        echo "<br>" . $tmpData['form']['test'];
-
         $this->GetTemplate('Form');
 
     }

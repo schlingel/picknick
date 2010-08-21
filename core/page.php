@@ -2,6 +2,12 @@
 
 require_once 'main.inc.php';
 
+/**
+ * The base class for pages in the picknick system. Every displayed page must be
+ * a child of this class. The name of the page has to be the same like the file
+ * name and the path. For example: The path of a class is ./page/users/frank/curriculum.php
+ * then the class name is UsersFrankCurriculum.
+ */
 abstract class Page {
 
     /**
@@ -119,12 +125,37 @@ abstract class Page {
         return $params;
     }
 
+    /**
+     * Gets the data from the data providers. This data is persistent for the whole session.
+     * @return array(mixed)
+     */
     public function GetDataStore() { return $this->Host->GetDataAccessor()->GetAssocArray(); }
 
+    /**
+     * Gets the data from the data sinks which aren't persistent for the whole session.
+     * @return array(mixed)
+     */
     public function GetTmpData() { return $this->Host->GetDataAccessor()->GetTmpData(); }
 
+    /**
+     * Writes the wanted html tag directly to the html page. If there is no html helper object
+     * with the given name the method throws an ObjectNotFoundException.
+     * @param string $name The name of the html helper object.
+     * @param string $tag The name of the wanted tag.
+     * @param array(mixed) $params The associative array which contains the attributes.
+     * @return void
+     */
     public function WriteElement($name, $tag, $params) {
         $this->Host->WriteHtml($name, $tag, $params);
     }
+
+    /**
+     * Returns the string of the wanted tag or throws an ObjectNotFoundException.
+     * @param string $name The name of the html helper object.
+     * @param string $tag The name of the wanted tag.
+     * @param array(mixed) $params The associative array which contains the attributes.
+     * @return string
+     */
+    public function GetElement($name, $tag, $params) { return $this->Host->GetHtml($name, $tag, $params); }
 }
 ?>

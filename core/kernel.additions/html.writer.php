@@ -72,11 +72,19 @@ class HtmlWriter {
      * @param string $tag The name of the tag which the html helper should print.
      * @param array(mixed) $parameter the associative array of tag attributes.
      */
-    public function Write($name, $tag, $parameter = array()) {
+    public function Write($name, $tag, $parameter = array()) { echo $this->Get($name, $tag, $parameter); }
+
+    /**
+     * Instead of writing the wanted tag direct to the page, this method just returns the
+     * string. If the wanted tag does not exist it throws an ObjectNotFoundException.
+     * @param string $name The name of html helber object.
+     * @param string $tag The name of the tag which the html helper should return.
+     * @param array(mixed) $parameter The associative array which contains the tag attributes.
+     */
+    public function Get($name, $tag, $parameter=array()) {
         foreach($this->HtmlHelpers as $htmlHelper) {
             if(strcasecmp($name, $htmlHelper->GetName()) == 0) {
-                $htmlHelper->WriteElement($tag, $parameter);
-                return;
+                return $htmlHelper->GetElement($tag, $parameter);
             }
         }
 

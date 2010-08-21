@@ -36,8 +36,21 @@ interface IKernel {
     /**
      * If a html helper with the given name exists, writes the wanted tag to the
      * page.
+     * @param string $name The name of the html helper object.
+     * @param string $tag The name of the wanted tag.
+     * @param array(mixed) $params The associative array which contains the attributes of the tag.
+     * @return void
      */
     public function WriteHtml($name, $tag, $params);
+    
+    /**
+     * If a html helper with the given name exists, returns the wanted tag as string.
+     * @param string $name The name of the html helper object.
+     * @param string $tag The name of the wanted tag.
+     * @param array(mixed) $params The associative array which contains the attributes of the tag.
+     * @return string
+     */
+    public function GetHtml($name, $tag, $params);
 }
 
 /**
@@ -137,6 +150,7 @@ class Kernel implements IKernel {
     /**
      * Parses the etc/data.provider/ directory and adds the the containing
      * data provider to the kernel.
+     * @return void
      */
     private function GetDataProviderFromEtc() {
         $path = dirname(__FILE__) . '/../etc/data.provider';
@@ -149,6 +163,10 @@ class Kernel implements IKernel {
         }
     }
 
+    /**
+     * Loads every file in the ./etc/data.sink/ directory and invokes the given classes.
+     * @return void
+     */
     private function GetDataSinkFromEtc() {
         $path = dirname(__FILE__) . '/../etc/data.sink';
         $filenames = $this->GetFileNamesFrom($path);
@@ -164,7 +182,7 @@ class Kernel implements IKernel {
      * Parses the etc/logger directory and adds returns the names of every php-file
      * in the directory.
      *
-     * returns array(string) 
+     * @returns array(string)
      */
     private function GetFileNamesFrom($path) {
         $array = array();
@@ -188,6 +206,7 @@ class Kernel implements IKernel {
 
     /**
      * Checks if the given string ends with '.php'
+     * @return boolean
      */
     private function IsPHP($filename) {
         $end = substr($filename, strlen($filename) - 4, 4);
@@ -195,15 +214,30 @@ class Kernel implements IKernel {
         return ($end === '.php');
     }
 
+    /**
+     * Build the physically path of a page by its location name and returns it.
+     * @param string $location The location of the page.
+     * @return string
+     */
     public function GetPathOfLocation($location) {
         return dirname(__FILE__) . "/../page/{$location}.php";
     }
-    
+
+    /**
+     * Checks if the given location string contains the name of a existing page
+     * class. This check does not check possible added session informations.
+     * @param string $location The location of the page.
+     * @return boolean
+     */
     public function IsLinkValid($location) {
         $path = $this->GetPathOfLocation($location);
         return file_exists($path);
     }
 
+    /**
+     * Displays the current set page.
+     * @return void
+     */
     public function ShowPage() { $this->CurrentPage->ShowBody(); }
 
     /**
@@ -248,10 +282,23 @@ class Kernel implements IKernel {
     /**
      * If a html helper with the given name exists, writes the wanted tag to the
      * page.
+     * @param string $name The name of the html helper object.
+     * @param string $tag The name of the tag.
+     * $param array(mixed) The associative array of the tag attributes.
      */
     public function WriteHtml($name, $tag, $params) {
        $this->HtmlWriter->Write($name, $tag, $params);
     }
+
+    /**
+     * If a html helper with the given name exists the method returns the string
+     * to display it.
+     * @param string $name The name of the html helper object.
+     * @param string $tag The name of the tag.
+     * $param array(mixed) The associative array of the tag attributes.
+     * @return string
+     */
+    public function GetHtml($name, $tag, $params) { return $this->HtmlWriter->Get($name, $tag, $params); }
 }
 
 ?>

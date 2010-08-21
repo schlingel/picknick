@@ -10,7 +10,8 @@ class DefaultLinkHelper extends HtmlHelper {
 
     public function  __construct() {
         $this->HtmlHelperTags = array(
-            new DefaultLinkHrefTag()
+            new DefaultLinkHrefTag(),
+            new DefaultHrefTag()
         );
     }
 }
