@@ -16,13 +16,23 @@ class DefaultLinkHelper extends HtmlHelper {
 }
 
 /**
- * The HTML helper tag class which creates links which works with GET parameters.
+ * This class manages to create urls with data in the GET parameter style.
  */
-class DefaultLinkHrefTag extends HtmlHelperTag {
+// This is needed as extra class to provide the user a way to get hrefs which
+// are compatible to the picknick system without hacking something extra ordinary
+// or to parse the href parameter from the html tag.
+class DefaultHrefTag extends HtmlHelperTag {
+
     /**
-     * Returns the name of this html helper tag. 'a'
+     * @var NonLinkParameter contains the names of the fields which shouldn't be
+     * in the a-tag.
      */
-    public function GetName() { return 'a'; }
+    protected static $NonLinkParameter = array('alt', 'text', 'kernel', 'location');
+
+    /**
+     * Returns the name of this html helper tag. 'href'
+     */
+    public function GetName() { return 'href'; }
 
     /**
      * Returns a link which is points to the given kernel file with the wanted
@@ -32,7 +42,7 @@ class DefaultLinkHrefTag extends HtmlHelperTag {
      */
     public function  GetTag($parameter) {
         if(!isset ($parameter['location']))
-            new LocationNotFoundeException("No location was set!");
+            new LocationNotFoundException("No location was set!");
 
         $location = $parameter['location'];
 
@@ -40,15 +50,10 @@ class DefaultLinkHrefTag extends HtmlHelperTag {
             throw new LocationNotFoundException("The location {$lcoation} does not exist!");
 
         $alt = (isset($parameter['alt'])) ? $parameter['alt'] : "Link to {$location}";
-        $text = (isset($parameter['text'])) ? $parameter['text'] : $location;
-        $kernelFile = (isset($parameter['kernel'])) ? $parameter['kernel'] : DEFAULT_KERNEL_FILE;
+        $kernelFile = (isset($parameter['kernel'])) ? $parameter['kernel'] : __DEFAULT_KERNEL_FILE__;
 
-        $parameter = $this->UnsetParameters(array('alt', 'text', 'kernel', 'location'), $parameter);
-        $parameter['href'] = $this->GetHrefForPage($location, $parameter, $kernelFile);
-
-        $aTag = $this->GetTagStart('a', $parameter);
-        $aTag = "{$aTag}{$text}" . $this->GetEndTag('a');
-        return $aTag;
+        $parameter = $this->UnsetParameters(self::$NonLinkParameter, $parameter);
+        return $this->GetHrefForPage($location, $parameter, $kernelFile);
     }
 
     /**
@@ -57,7 +62,7 @@ class DefaultLinkHrefTag extends HtmlHelperTag {
      * @param array(mixed) $array
      * @return array(mixed)
      */
-    private function UnsetParameters($names, $array) {
+    protected function UnsetParameters($names, $array) {
         foreach($names as $name) {
             if(isset($array[$name])) {
                 unset($array[$name]);
@@ -72,7 +77,7 @@ class DefaultLinkHrefTag extends HtmlHelperTag {
      * @param string $location
      * @return boolean
      */
-    private function PageExist($location) {
+    protected function PageExist($location) {
         $path = dirname(__FILE__) . "/../../page/{$location}.php";
         return file_exists($path);
     }
@@ -85,7 +90,7 @@ class DefaultLinkHrefTag extends HtmlHelperTag {
      * @param string kernelFile
      * @return string
      */
-    protected function GetHrefForPage($location, $parameter=array(), $kernelFile=DEFAULT_KERNEL_FILE) {
+    protected function GetHrefForPage($location, $parameter=array(), $kernelFile=__DEFAULT_KERNEL_FILE__) {
         $getparams = "?location={$location}";
 
         foreach($parameter as $key => $value) {
@@ -98,4 +103,29 @@ class DefaultLinkHrefTag extends HtmlHelperTag {
     }
 }
 
+/**
+ * The HTML helper tag class which creates links which works with GET parameters.
+ */
+class DefaultLinkHrefTag extends DefaultHrefTag {
+    /**
+     * Returns the name of this html helper tag. 'a'
+     */
+    public function GetName() { return 'a'; }
+
+    /**
+     * Returns a link which is points to the given kernel file with the wanted
+     * location and the other parameters.
+     * @param array(mixed) $parameter
+     * @return string
+     */
+    public function  GetTag($parameter) {
+        $text = $parameter['text'];
+        $parameter['href'] = parent::GetTag($parameter);
+        $parameter = $this->UnsetParameters(self::$NonLinkParameter, $parameter);
+        
+        $aTag = $this->GetTagStart('a', $parameter);
+        $aTag = "{$aTag}{$text}" . $this->GetEndTag('a');
+        return $aTag;
+    }
+}
 ?>

@@ -68,6 +68,10 @@ define('__PROJECT__', 'Picknick/');
 
 define('__URL__', "http://{$_SERVER['SERVER_NAME']}/" . __PROJECT__);
 
+define('__DEFAULT_KERNEL_LOCATION__', 'index');
+
+define('__DEFAULT_KERNEL_FILE__', __DEFAULT_KERNEL_LOCATION__ . '.php');
+
 require_once dirname(__FILE__) . '/exceptions.php';
 require_once dirname(__FILE__) . '/logging.php';
 require_once dirname(__FILE__) . '/page.php';
@@ -81,8 +85,5 @@ include_dir(dirname(__FILE__) . '/../etc/data.provider');
 include_dir(dirname(__FILE__) . '/../etc/data.sink');
 include_dir(dirname(__FILE__) . '/../etc/html.helper');
 include_dir(dirname(__FILE__) . '/../page');
-
-define('DEFAULT_KERNEL_FILE', 'index.php');
-define('DEFAULT_KERNEL_LOCATION', 'index');
 
 ?>
