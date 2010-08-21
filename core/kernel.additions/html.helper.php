@@ -20,10 +20,19 @@ interface IHtmlHelper {
     public function Initialize($storedData);
 
     /**
+     * Returns the wanted tag as string instead of the writing it direct to the
+     * page.
+     * @param string $name
+     * @param array(mixed) $params
+     * @return string
+     */
+    public function GetElement($name, $params);
+
+    /**
      * Writes the specific element to the current position when the method is
      * called.
-     * @param string name
-     * @param array(mixed) params - contains element specific parameter.
+     * @param string $name
+     * @param array(mixed) $params - contains element specific parameter.
      */
     public function WriteElement($name, $params);
 }
@@ -57,11 +66,20 @@ abstract class HtmlHelper implements IHtmlHelper {
      * @return void
      */
     public function  WriteElement($name, $params) {
+        echo $this->GetElement($name, $params);
+    }
+
+    /**
+     * Gets the wanted element and returns it as string.
+     * @param string $name
+     * @param array(mixed) $params
+     * @return string
+     */
+    public function GetElement($name, $params) {
         foreach($this->HtmlHelperTags as $helperTag) {
             if(strcasecmp($name, $helperTag->GetName()) == 0) {
-                echo $helperTag->GetTag($params);
-                return;
-            }  
+                return $helperTag->GetTag($params);
+            }
         }
 
         throw new ObjectNotFoundException("Couldn't find the wanted tag helper object!");
