@@ -9,6 +9,10 @@ class DefaultSink implements IDataSink {
 
     protected $Data;
 
+    /**
+     * Initializes and parses the data from the GET and the POST variables.
+     * @return void
+     */
     public function Initialize() {
         $array = array();
         $array = MergeArray($array, $_POST);
@@ -25,14 +29,6 @@ class DefaultSink implements IDataSink {
                 $this->Data[$key] = $value;
             }
         }
-    }
-    
-    /**
-     * Splits the given name by the '/' as delimiter and return the parts of the
-     * name.
-     */
-    private function GetNames($name) {
-        return explode('/', $name);
     }
 
     /**
