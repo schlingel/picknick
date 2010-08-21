@@ -62,7 +62,7 @@ class UrlDataSink implements IDataSink {
      */
     private function IsDataUrl($url) {
         //return preg_match("/(\/)((a-zA-Z0-9\.\-)+(\/))+/", $url);
-        return true;
+        return !strpos($url, "?") && !strpos($url, "&");
     }
 
     /**
