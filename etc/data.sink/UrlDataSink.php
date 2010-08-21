@@ -94,9 +94,13 @@ class UrlDataSink implements IDataSink {
         // The following code removes the "LANDINGPAGE/" string.
         $parts = explode('/', $url);
         $count = strlen($parts[0]) + 1;
-
         $url = substr($url, $count);
-        $url = substr($url, 0, strlen($url) - 1);
+
+        // Removes the last '/' if there is any.
+        $count = strlen($url);
+        $count -= ($url{$count - 1} === '/') ? 1 : 0;
+        $url = substr($url, 0, $count);
+        
 	return $url;
     }
 

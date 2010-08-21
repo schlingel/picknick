@@ -9,7 +9,7 @@ class DefaultLinkHelper extends HtmlHelper {
     public function GetName() { return 'link'; }
 
     public function  __construct() {
-        $this->StoredData = array(
+        $this->HtmlHelperTags = array(
             new DefaultLinkHrefTag()
         );
     }
@@ -72,7 +72,7 @@ class DefaultLinkHrefTag extends HtmlHelperTag {
      * @param string kernelFile
      * @return string
      */
-    protected function GetHrefForPage($location, $parameter, $kernelFile) {
+    protected function GetHrefForPage($location, $parameter, $kernelFile=DEFAULT_KERNEL_FILE) {
         $getparams = "?location={$location}";
 
         foreach($parameter as $key => $value) {

@@ -1,0 +1,4 @@
+RewriteEngine Off
+RewriteRule /(http:\/\/){0,1}([a-zA-Z.\-0-9]+\/)([a-zA-Z0-9]+)$(\/)([a-zA-Z0-9]+\/[a-zA-Z0-9]+\/)*/  $1.php
+RewriteEngine On
+RewriteRule ^(.*)  index.php

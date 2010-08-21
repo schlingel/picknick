@@ -72,7 +72,7 @@ class HtmlWriter {
      * @param string $tag The name of the tag which the html helper should print.
      * @param array(mixed) $parameter the associative array of tag attributes.
      */
-    public function Write($name, $tag, $parameter) {
+    public function Write($name, $tag, $parameter = array()) {
         foreach($this->HtmlHelpers as $htmlHelper) {
             if(strcasecmp($name, $htmlHelper->GetName()) == 0) {
                 $htmlHelper->WriteElement($tag, $parameter);

@@ -57,8 +57,12 @@ abstract class Page {
     /**
      * Uses Getlink and writes the given anchor the html file.
      */
-    protected function WriteLink($location, $name='', $alt='', $extraParams=null, $kernel='index.php') {
-        echo $this->GetLink($location, $name, $alt, $extraParams, $kernel);
+    protected function WriteLink($location, $name='', $alt='', $extraParams=array(), $kernel='index.php') {
+        $extraParams['alt'] = $alt;
+        $extraParams['location'] = $location;
+        $extraParams['text'] = $name;
+
+        $this->Host->WriteHtml('link', 'a', $extraParams);
     }
 
     /**

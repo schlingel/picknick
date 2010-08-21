@@ -82,4 +82,7 @@ include_dir(dirname(__FILE__) . '/../etc/data.sink');
 include_dir(dirname(__FILE__) . '/../etc/html.helper');
 include_dir(dirname(__FILE__) . '/../page');
 
+define('DEFAULT_KERNEL_FILE', 'index.php');
+define('DEFAULT_KERNEL_LOCATION', 'index');
+
 ?>
