@@ -78,7 +78,7 @@ class UrlDataSink implements IDataSink {
      */
     private function GetDataString() {
         $wholeString = $_SERVER['REQUEST_URI'];
-
+        
         if(!$this->IsDataUrl($wholeString))
             return '';
         

@@ -9,7 +9,6 @@ require_once 'main.inc.php';
  * then the class name is UsersFrankCurriculum.
  */
 abstract class Page {
-
     /**
      * The reference to the kernel object.
      * @var IKernel 
@@ -63,7 +62,7 @@ abstract class Page {
     /**
      * Uses Getlink and writes the given anchor the html file.
      */
-    protected function WriteLink($location, $name='', $alt='', $extraParams=array(), $kernel='index.php') {
+    protected function WriteLink($location, $name='', $alt='', $extraParams=array()) {
         $extraParams['alt'] = $alt;
         $extraParams['location'] = $location;
         $extraParams['text'] = $name;
@@ -79,14 +78,12 @@ abstract class Page {
     // in the subdirectory admin with the name panel the addressing location
     // would be: 'admin/panel'
     // The resulting link would be "SERVER_PATH"/index.php?REGISTERED_VARS&location=admin/panel
-    protected function GetLink($location, $name='', $alt='', $extraParams=null, $kernel='index.php') {
-        if(!$this->Host->IsLinkValid($location))
-            throw new FileNotFoundException("The given link {$location} does not point to a file in the page directory!");
-        
-        $name = ($name === '') ? $location : $name;
-        $href = $this->GetHrefFor($location, $kernel, $extraParams);
+    protected function GetLink($location, $name='', $alt='', $extraParams=array()) {
+        $extraParams['alt'] = $alt;
+        $extraParams['location'] = $location;
+        $extraParams['text'] = $name;
 
-        return "<a href=\"{$href}\" alt=\"{$alt}\">{$name}</a>";
+        return $this->Host->GetHtml('link', 'a', $extraParams);
     }
 
     /**
@@ -145,9 +142,7 @@ abstract class Page {
      * @param array(mixed) $params The associative array which contains the attributes.
      * @return void
      */
-    public function WriteElement($name, $tag, $params) {
-        $this->Host->WriteHtml($name, $tag, $params);
-    }
+    public function WriteElement($name, $tag, $params) { $this->Host->WriteHtml($name, $tag, $params); }
 
     /**
      * Returns the string of the wanted tag or throws an ObjectNotFoundException.
