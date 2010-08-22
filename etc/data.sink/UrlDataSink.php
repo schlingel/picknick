@@ -35,7 +35,7 @@ class UrlDataSink implements IDataSink {
     // loaded all the time.
     private function InitializeData() {
         $dataString = $this->GetDataString();
-        if($dataString === '')
+        if(strcmp($dataString, '') == 0)
             return;
         
         $parts = explode('/', $dataString);
@@ -107,7 +107,7 @@ class UrlDataSink implements IDataSink {
         $count = strlen($url);
         $count -= ($url{$count - 1} === '/') ? 1 : 0;
         $url = substr($url, 0, $count);
-        
+
 	return $url;
     }
 
