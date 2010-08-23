@@ -57,7 +57,7 @@ interface IKernel {
      * @param Page $page
      * @return void
      */
-    public function SetPage($page);
+    public function InvokePage($page);
 }
 
 /**
@@ -313,11 +313,12 @@ class Kernel implements IKernel {
      * @param Page page
      * @return void
      */
-    public function SetPage($page) {
+    public function InvokePage($page) {
         if(!($page instanceof Page))
             throw new WrongTypeException ("The page parameter must be of the type Page!");
 
         $this->CurrentPage = $page;
+        $this->CurrentPage->Initialize();
     }
 }
 
