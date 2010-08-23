@@ -1,2 +1,2 @@
-RewriteEngine On
+RewriteEngine Off
 RewriteRule ^([a-zA-Z0-9\-\.]+)((/[a-zA-Z0-9\-\.]+)*)/?$ index.php

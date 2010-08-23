@@ -2,7 +2,7 @@
 /**
  * The html helper class which creates links which works with GET parameter.
  */
-class DefaultLinkHelper extends HtmlHelper {
+class SlashedLinkHelper extends HtmlHelper {
     public function GetName() { return 'link'; }
 
     public function  __construct() {
@@ -48,7 +48,7 @@ class SlashedHrefTag extends HtmlHelperTag {
             throw new LocationNotFoundException("The location {$lcoation} does not exist!");
 
         $alt = (isset($parameter['alt'])) ? $parameter['alt'] : "Link to {$location}";
-        $kernelFile = (isset($parameter['kernel'])) ? $parameter['kernel'] : __DEFAULT_KERNEL_FILE__;
+        $kernelFile = (isset($parameter['kernel'])) ? $parameter['kernel'] : __DEFAULT_KERNEL_LOCATION__;
 
         $parameter = $this->UnsetParameters(self::$NonLinkParameter, $parameter);
         return $this->GetHrefForPage($location, $parameter, $kernelFile);
@@ -89,7 +89,7 @@ class SlashedHrefTag extends HtmlHelperTag {
      * @return string
      */
     protected function GetHrefForPage($location, $parameter=array(), $kernelFile=__DEFAULT_KERNEL_LOCATION__) {
-        $getparams = "/{$location}/";
+        $getparams = "/location/{$location}/";
 
         foreach($parameter as $key => $value) {
             $key = str_replace(array('/'), array('.'), $key);
