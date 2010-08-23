@@ -93,8 +93,7 @@ class Kernel implements IKernel {
         $this->DataAccessor->Initialize();
         $this->HtmlWriter->Initialize($this->DataAccessor->GetAssocArray());
 
-        $this->CurrentPage = $this->GetPage($this->GetLocationLink());
-        $this->CurrentPage->Initialize();
+        $this->InvokePage($this->GetPage($this->GetLocationLink()));
     }
 
     /**
@@ -308,7 +307,7 @@ class Kernel implements IKernel {
     public function GetHtml($name, $tag, $params) { return $this->HtmlWriter->Get($name, $tag, $params); }
 
     /*
-     * Sets the current page to the given page. Throws a WrongTypeException if
+     * Sets the current page to the given page and calls the Initialize method of the page. Throws a WrongTypeException if
      * the given parameter isn't a Page type.
      * @param Page page
      * @return void
