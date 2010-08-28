@@ -39,7 +39,7 @@ class DatabaseHelper {
      * with the mysql_real_escape function)
      * @return string query
      */
-    public function GetSelectQuery($query, $params) {
+    public function GetQuery($query, $params) {
         foreach($params as $key => $value) {
             if($this->IsValidParameter($key))
                 throw new InvalidArgsException("The parameter of the query wasn't proper formatted. The name of the key must start with an @ and have more than one char.");
@@ -69,15 +69,37 @@ class DatabaseHelper {
     /**
      * Checks if the given value is a string and if it is so border it with ticks (')
      * It additionally escapes it with mysql_real_escape.
+     * @param $value mixed The value which should be escaped.
+     * @return The escaped value.
      */
     private function FormatParameter($value) {
-        if(strcmp(gettype($value), "string")) {
+        if(strcmp(gettype($value), "string") == 0) {
             $value = mysql_real_escape_string($value);
             return "'{$value}'";
         }
         else {
             return mysql_real_escape_string($value);
         }
+    }
+
+    /**
+     * Runs the given query against the set up DB handler.
+     * @param string $query A ready query.
+     * @return mixed the query result.
+     */
+    public function Query($query) {
+        return $this->DBHandler->Query($query);
+    }
+
+    /**
+     * Formats the given queryString with the given parameters, quotes and encapsulates the string keys in '' and
+     * runs the query against the DB handler.
+     * @parameter string $queryString The string which contains place holders instead of value actual values.
+     * @parameter array(mixed) $parameter The array containing the associative array with the keys.
+     * @return mixed The DB result.
+     */
+    public function RawQuery($queryString, $params) {
+        return $this->Query($this->GetQuery($queryString, $params));
     }
 }
 ?>
