@@ -8,4 +8,6 @@ class ObjectNotFoundException extends Exception { }
 class LocationNotFoundException extends Exception { }
 
 class InvalidArgsException extends Exception { }
+
+class DBException extends Exception { }
 ?>
