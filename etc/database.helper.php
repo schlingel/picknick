@@ -46,6 +46,8 @@ class DatabaseHelper {
 
             $query = str_replace($query, $key, $this->FormatParameter($value));
         }
+
+        return $query;
     }
 
     /**

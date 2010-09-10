@@ -34,7 +34,7 @@ class MysqlDBHandler implements IDBHandler {
      * @param string The user name
      * @param string The password of the DB user.
      */
-    public function  Connect($host, $user, $password) {
+    public function Connect($host, $user, $password) {
         $this->DB = mysql_connect ($host, $user, $password);
 
         if(!$this->DB) {
