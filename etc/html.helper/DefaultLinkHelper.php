@@ -79,6 +79,7 @@ class DefaultHrefTag extends HtmlHelperTag {
      * @return boolean
      */
     protected function PageExist($location) {
+        $location = ucfirst($location);
         $path = dirname(__FILE__) . "/../../page/{$location}.php";
         return file_exists($path);
     }

@@ -103,6 +103,7 @@ class Kernel implements IKernel {
     private function GetLocationLink() {
         $array = $this->DataAccessor->GetTmpValue();
         $name = $array['location'];
+        $name = ucfirst($name);
 
         if($name === null)
             return 'Standard';

@@ -6,5 +6,5 @@
 
 ?>
 <ul style="display: table-row;">
-    <li><?php $this->WriteLink('standard', 'Home'); ?> </li>
+    <li><?php $this->WriteLink('Standard', 'Home'); ?> </li>
 </ul>
