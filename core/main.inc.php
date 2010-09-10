@@ -59,10 +59,9 @@ function IsPHP($file) {
  *      +-system
  *
  * then it is:
- * server __PROJECT__ must be empty:
  *  define('__PROJECT__', 'project/page/system/');
  * 
- * The last slash is needed in a directory hierachy!
+ * The last slash is needed in a directory hierachy and only then!
  */
 define('__PROJECT__', 'Picknick/');
 
