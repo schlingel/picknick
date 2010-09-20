@@ -105,7 +105,7 @@ class Kernel implements IKernel {
         $name = $array['location'];
         $name = ucfirst($name);
 
-        if($name === null)
+        if($name === null || (strlen($name) == 0))
             return 'Standard';
 
         return $name;
