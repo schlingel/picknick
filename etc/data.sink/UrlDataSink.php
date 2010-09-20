@@ -38,7 +38,7 @@ class UrlDataSink implements IDataSink {
         if(strcmp($dataString, '') == 0)
             return;
         
-        $parts = explode('/', $dataString);
+        $parts = $this->GetUrlParts($dataString);
 
         if((count($parts) % 2) != 0)
             throw new InvalidArgsException("The URL parameters have no value for every key!");
@@ -99,7 +99,7 @@ class UrlDataSink implements IDataSink {
         }
 
         // The following code removes the "LANDINGPAGE/" string.
-        $parts = explode('/', $url);
+        $parts = $this->GetUrlParts($url);
         $count = strlen($parts[0]) + 1;
         $url = substr($url, $count);
 
@@ -109,6 +109,32 @@ class UrlDataSink implements IDataSink {
         $url = substr($url, 0, $count);
 
 	return $url;
+    }
+
+    /**
+     * Calls explode with '/' as delimiter on $url and removes every empty
+     * string in the resulting array and returns this array.
+     * @param string $url
+     * @return array(string)
+     */
+    private function GetUrlParts($url) {
+        // I had to use this because on a free linux webserver explode didn't
+        // work properly and returned empty fields in the array which lead to
+        // errors
+        $nonFilteredParts = explode('/', $url);
+        $filteredParts = array();
+        $filteredIndex = 0;
+
+        for($i = 0; $i < count($nonFilteredParts); $i++) {
+            $element = $nonFilteredParts[$i];
+
+            if(strlen($element) > 0) {
+                $filteredParts[$filteredIndex] = $element;
+                $filteredIndex++;
+            }
+        }
+
+        return $filteredParts;
     }
 
     /**
